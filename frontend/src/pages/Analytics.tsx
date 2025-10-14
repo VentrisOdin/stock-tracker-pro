@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Box, Heading, HStack, Select, VStack, Spinner } from "@chakra-ui/react";
 import { getState, history, forecast } from "../api";
@@ -19,7 +18,7 @@ export default function Analytics(){
     try {
       const f = await forecast(sym, 300, 252);
       setFc(f);
-    } catch(e) { setFc(null); }
+    } catch { setFc(null); }
     setLoading(false);
   };
 
@@ -28,7 +27,9 @@ export default function Analytics(){
       const s = await getState();
       const list = s.watchlist || [];
       setSyms(list);
-      const first = list[0] ?? "MSFT";
+      const url = new URL(window.location.href);
+      const qsym = url.searchParams.get("s");
+      const first = qsym && list.includes(qsym) ? qsym : (list[0] ?? "MSFT");
       setSel(first);
       load(first);
     })();
